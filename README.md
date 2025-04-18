@@ -30,13 +30,18 @@ Note: I think it's better to download the original repositry of stable-diffusion
 
 In this work, we use the public dataset [OASIS-3](https://sites.wustl.edu/oasisbrains/). However, it doesn't include the segmentation mask, which is necessary for following manual dataset generation. We segment the images by FreeSurfer and it really takes a long time. You can concat me for the segmentation data.
 
-Generate the "structure-disentangled" text-image dataset:
+1. Generate the "structure-disentangled" text-image dataset.
+2. 
 
 ```
 python create_dataset/create_dataset.py
 ```
 
 # 3 Train
+
+We pretrain the autoencoder part of SD to adapt for the medical image domain. Although this will result in the loss of generalization ability, experiments shows it can improve the final image quality greatly (2dB on PSNR).
+
+To pretrain the autoencoder
 
 Remember to edit the yaml file according to your configuration:
 1. Edit your ckpt_path
@@ -47,6 +52,4 @@ python main.py --name BrainEditor_v1 --base configs/train.yaml --train --gpus 2,
 ```
 
 # 4 Evaluate
-
-# Optional
 
