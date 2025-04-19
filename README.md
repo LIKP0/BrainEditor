@@ -31,25 +31,39 @@ Note: I think it's better to download the original repositry of stable-diffusion
 In this work, we use the public dataset [OASIS-3](https://sites.wustl.edu/oasisbrains/). However, it doesn't include the segmentation mask, which is necessary for following manual dataset generation. We segment the images by FreeSurfer and it really takes a long time. You can concat me for the segmentation data.
 
 1. Generate the "structure-disentangled" text-image dataset.
-2. 
+2. Generate the image-label dataset to train the nnUNet, which is used for structure change accuracy evaluation.
+3. Generate the image-image dataset to train the autoencoder of SD.
 
 ```
 python create_dataset/create_dataset.py
+python create_dataset/create_nnUnet_dataset.py
+python create_dataset/create_VAE_dataset.py
 ```
 
 # 3 Train
 
-We pretrain the autoencoder part of SD to adapt for the medical image domain. Although this will result in the loss of generalization ability, experiments shows it can improve the final image quality greatly (2dB on PSNR).
+**You need at least 40GB GPU for a reasonable training time!**
 
-To pretrain the autoencoder
+First, we pretrain the autoencoder part of SD to adapt for the medical image domain. Although this will result in the loss of generalization ability, experiments shows it can improve the final image quality greatly (2dB on PSNR).
 
-Remember to edit the yaml file according to your configuration:
-1. Edit your ckpt_path
-2. 
+To pretrain the autoencoder (very easy!):
+1. Clone the original [CompVis/latent-diffusion](https://github.com/CompVis/latent-diffusion) repositry.
+2. Place the files in AutoEncoder_pretrain folder to the right place.
+3. Train in the ldm directory with our own medical images data.
 
 ```
-python main.py --name BrainEditor_v1 --base configs/train.yaml --train --gpus 2,3,4
+python main.py --base AutoEncoder_pretrain/Brain_VAE.yaml --train --name brain_vae --gpus 3,4
+```
+
+Then, we train the image editing model of BrainEditor. Remember to edit the yaml file according to your configuration:
+1. Edit your ckpt_path, including the pretrained SD and autoencoder checkpoint path.
+2. Edit your data path
+
+```
+python main.py --base configs/train.yaml --train --name BrainEditor_v1 --gpus 3,4
 ```
 
 # 4 Evaluate
+
+
 
