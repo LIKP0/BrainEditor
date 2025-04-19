@@ -37,7 +37,7 @@ python create_dataset/create_dataset.py
 python create_dataset/create_nnUnet_dataset.py
 python create_dataset/create_VAE_dataset.py
 ```
-The structure of main dataset will be:
+The structure of the main dataset will be:
 ```
 data/
 ├── OAS2_0002_MR1MR2_XZ80_C1
